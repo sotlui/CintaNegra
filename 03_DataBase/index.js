@@ -11,7 +11,30 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     .then(() => console.log('Database connected'))
     .catch(() => console.log('Error connecting'));
 
+//Crear nuestros modelos schemas con los que van utilizados con nuestras colecciones.
+//ODM Object Document Mapping
 
+/* Un aeropuerto busca controlar los vuelos que llegan al lugar, desea conocer los vuelos que existen, a qué aerolínea pertenecen, las características del avión y el lugar de procedencia. Ayuda al aeropuerto a solucionar su problema.
+ */
+//Generar schema--> definicion de las reglas de una coleccion
+const schema = new mongoose.Schema({
+    ariline: {
+        type: String,
+        required: true,
+    },
+    aircraft_name: {
+        type: String,
+        required: true,
+    },
+    aircraft_model: Number,
+    fligth_from: {
+        type: String,
+        required: true,
+    },
+});
+//Generar un modelo a partir de schema--> Objecto que permite interactur con la coleccion
+
+const Flights = mongoose.model('Flights', schema);
 
 
 //Endpoints
