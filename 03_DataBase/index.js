@@ -36,22 +36,49 @@ const schema = new mongoose.Schema({
 
 const Flights = mongoose.model('Flights', schema);
 
+//Mirewalies
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ extended: true }));
+
 
 //Endpoints
 app.get('/', (req, res) => res.status(200).json({ messaje: " it's alive!" }));
 
 //CRUD
 //Create
-app.post('/api/animales', (req, res) => {
-    //1: Recibir el animal que se quiere crear en la bd
+app.post('/api/flights', (req, res) => {
+    //1: Recibir el vuelo que se quiere crear en la bd  
+    const { body } = req;
+    console.log(body);  
     //2: Pedirle a la bd que guarde el nuevo animal
-    //3: Con la respuesta recibimos de la bd, le respondemos al cliente
-    const animal = { id: 'A1', nombre: 'Firulais', edad: 4 };
-    res.status(201).json({ animal })
+    const newFlight = new Flights(body);
+    newFlight.save()
+        .then((resMongo) => res.status(201).json(resMongo))
+        .catch((err) => res.status(400).json(err));
 });
-//Read
-//Update
-//Delete
 
+app.get('/api/flights', (req, res) => {
+    Flights.find()
+        .then((resMongo) => res.status(200).json(resMongo))
+        .catch((err) => res.status(400).json(err));
+});
+
+app.get('/api/flights/:id', (req, res) => {
+    Flights.findById(req.params.id)
+        .then((resMongo) => res.status(200).json(resMongo))
+        .catch((err) => res.status(400).json(err));
+});
+//Update
+app.patch('/api/flights/:id', (req, res) => {
+    Flights.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        .then((resMongo) => res.status(200).json(resMongo))
+        .catch((err) => res.status(400).json(err));
+});
+//Delete
+app.delete('/api/flights/:id', (req, res) => {
+    Flights.findByIdAndDelete(req.params.id)
+        .then((resMongo) => res.status(204).json(resMongo))
+        .catch((err) => res.status(400).json(err));
+});
 //Encender el servidor
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
